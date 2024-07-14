@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const Login = () => import('@/views/Login/Login.vue')
 const Home = () => import('@/views/Home/Home.vue')
@@ -8,6 +7,15 @@ const Execption = () => import('@/views/Execption/Execption.vue')
 const Apply = () => import('@/views/Apply/Apply.vue')
 const Check = () => import('@/views/Check/Check.vue')
 
+declare module 'vue-router' {
+  interface RouteMeta {
+    menu?: boolean
+    title?: string
+    icon?: string
+    auth?: boolean
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -15,26 +23,56 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Home,
+      meta: {
+        menu: true,
+        title: '考勤管理',
+        icon: 'document-copy',
+        auth: true
+      },
       children: [
         {
           path: 'sign',
           name: 'sign',
-          component: Sign
+          component: Sign,
+          meta: {
+            menu: true,
+            title: '在线打卡签到',
+            icon: 'Position',
+            auth: true
+          }
         },
         {
           path: 'execption',
           name: 'execption',
-          component: Execption
+          component: Execption,
+          meta: {
+            menu: true,
+            title: '添加考勤审批',
+            icon: 'Clock',
+            auth: true
+          }
         },
         {
           path: 'apply',
           name: 'apply',
-          component: Apply
+          component: Apply,
+          meta: {
+            menu: true,
+            title: '我的考勤审批',
+            icon: 'CircleCheck',
+            auth: true
+          }
         },
         {
           path: 'check',
           name: 'check',
-          component: Check
+          component: Check,
+          meta: {
+            menu: true,
+            title: '异常考勤查询',
+            icon: 'Edit',
+            auth: true
+          }
         }
       ]
     },
