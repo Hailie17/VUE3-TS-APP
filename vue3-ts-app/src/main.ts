@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import store, { key } from './store'
+import store, { key } from './stores'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -22,4 +22,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(createPinia())
 app.use(router)
 
-app.use(ElementPlus, { locale: zhCn }).use(store).mount('#app')
+app.use(ElementPlus, { locale: zhCn }).use(store, key).mount('#app')
