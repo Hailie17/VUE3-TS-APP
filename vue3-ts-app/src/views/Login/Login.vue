@@ -9,10 +9,50 @@
       <div class="header-title">在线考勤系统</div>
     </div>
     <div class="desc">零基础入门到进阶，掌握三大热门技术系统</div>
+    <el-form
+      ref="ruleFormRef"
+      style="max-width: 600px"
+      :model="ruleForm"
+      status-icon
+      :rules="rules"
+      label-width="auto"
+      class="main"
+    >
+      <el-form-item label="Email" prop="email">
+        <el-input v-model="ruleForm.email" type="text" placeholder="请输入邮箱" />
+      </el-form-item>
+      <el-form-item label="Password" prop="pass">
+        <el-input v-model="ruleForm.pass" type="password" placeholder="请输入密码" />
+      </el-form-item>
+      <el-form-item label=" ">
+        <el-button type="primary" @click="submitForm(ruleFormRef)" auto-insert-space>
+          Submit
+        </el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+
+interface User {
+  email: string
+  pass: string
+}
+
+const formRef = ref<FormInstance>()
+const ruleForm = reactive<User>({
+  pass: '',
+  email: ''
+})
+
+const rules = reactive<FormRules>({
+  pass: [{ trigger: 'blur' }],
+  email: [{ trigger: 'blur' }]
+})
+
 // import { useStore } from '@/stores'
 // const store = useStore()
 // store.dispatch('users/login').then((res) => {
@@ -50,6 +90,33 @@
       .icon-typescript {
         color: blue;
       }
+    }
+    .header-title {
+      margin-left: 30px;
+      font-weight: 700;
+      font-size: 30px;
+    }
+  }
+  .desc {
+    text-align: center;
+    padding-top: 30px;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 16px;
+  }
+  .main {
+    width: 500px;
+    margin: 0 auto;
+    padding-top: 50px;
+  }
+  .users {
+    width: 500px;
+    margin: 60px auto;
+    color: rgba(0, 0, 0, 0.65);
+    h3 {
+      font-size: 16px;
+    }
+    p {
+      margin: 20px;
     }
   }
 }
