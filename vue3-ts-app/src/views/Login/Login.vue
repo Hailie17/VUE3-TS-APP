@@ -26,7 +26,31 @@
   height: 100vh;
   background: url('@/assets/images/login-bg.svg') no-repeat;
   background-size: 100%;
-  .header-logo {
+  .header {
+    height: 44px;
+    line-height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+    padding-top: 100px;
+    .header-logo {
+      .icon-vue,
+      .icon-icon-test,
+      .icon-typescript {
+        margin-right: 5px;
+        font-size: inherit;
+      }
+      .icon-vue {
+        color: green;
+      }
+      .icon-icon-test {
+        color: #deb887;
+      }
+      .icon-typescript {
+        color: blue;
+      }
+    }
   }
 }
 </style>
