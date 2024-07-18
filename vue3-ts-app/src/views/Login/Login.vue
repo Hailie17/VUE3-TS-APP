@@ -26,10 +26,19 @@
       </el-form-item>
       <el-form-item label=" ">
         <el-button type="primary" @click="submitForm(ruleFormRef)" auto-insert-space>
-          Submit
+          登录
         </el-button>
       </el-form-item>
     </el-form>
+    <div class="users">
+      <el-row :gutter="20">
+        <el-col v-for="item in testUsers" :key="item.email" :span="12">
+          <h3>测试账号，<el-button @click="autoLogin(item)">一键登录</el-button></h3>
+          <p>邮箱：{{ item.email }}</p>
+          <p>密码：{{ item.pass }}</p>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -48,16 +57,49 @@ const ruleForm = reactive<User>({
   email: ''
 })
 
+const testUsers = [
+  {
+    email: 'huangrong@imooc.com',
+    pass: 'huangrong'
+  },
+  {
+    email: 'hongqigong@imooc.com',
+    pass: 'hongqigong'
+  }
+]
+
 const rules = reactive<FormRules>({
-  pass: [{ trigger: 'blur' }],
-  email: [{ trigger: 'blur' }]
+  pass: [{ required: true, message: 'pass is required' }],
+  email: [
+    {
+      required: true,
+      message: 'Please input email address',
+      trigger: 'blur'
+    },
+    {
+      type: 'email',
+      message: 'Please input correct email address',
+      trigger: ['blur', 'change']
+    }
+  ]
 })
 
-// import { useStore } from '@/stores'
-// const store = useStore()
-// store.dispatch('users/login').then((res) => {
-//   console.log(res.data)
-// })
+const submitForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.validate((valid) => {
+    if (valid) {
+      console.log('submit!')
+    } else {
+      console.log('error submit!')
+    }
+  })
+}
+
+const autoLogin = (user: User) => {
+  ruleForm.email = user.email
+  ruleForm.pass = user.pass
+  submitForm(formRef.value)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -116,7 +158,7 @@ const rules = reactive<FormRules>({
       font-size: 16px;
     }
     p {
-      margin: 20px;
+      margin: 10px;
     }
   }
 }
