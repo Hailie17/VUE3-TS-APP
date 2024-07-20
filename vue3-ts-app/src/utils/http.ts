@@ -1,4 +1,5 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import stores, { type StateAll } from '@/stores'
 
 const instance = axios.create({
   baseURL: 'http://api.h5ke.top',
@@ -8,6 +9,9 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(
   function (config) {
+    if (config.headers) {
+      config.headers.authorization = (stores.state as StateAll).users.token
+    }
     return config
   },
   function (error) {

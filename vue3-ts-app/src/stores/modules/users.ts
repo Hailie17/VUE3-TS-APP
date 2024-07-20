@@ -2,14 +2,22 @@ import http from '@/utils/http'
 import type { State } from '../index'
 import type { ActionTree, MutationTree, GetterTree } from 'vuex/types/index.js'
 
-export interface UsersState {}
+export interface UsersState {
+  token: string
+}
 
-const state: UsersState = {}
+const state: UsersState = {
+  token: ''
+}
 
-const mutations: MutationTree<UsersState> = {}
+const mutations: MutationTree<UsersState> = {
+  updateToken: (state, payload) => {
+    state.token = payload
+  }
+}
 const actions: ActionTree<UsersState, State> = {
-  login() {
-    return http.post('/user/login')
+  login(context, payload) {
+    return http.post('/users/login', payload)
   }
 }
 const getters: GetterTree<UsersState, State> = {}

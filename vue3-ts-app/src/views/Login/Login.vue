@@ -44,14 +44,20 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
+import { useStore } from '@/stores'
+import { useRouter } from 'vue-router'
+
+const store = useStore()
+const router = useRouter()
 
 interface User {
   email: string
   pass: string
 }
-// 11
-const formRef = ref<FormInstance>()
+
+const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<User>({
   pass: '',
   email: ''
@@ -67,7 +73,7 @@ const testUsers = [
     pass: 'hongqigong'
   }
 ]
-
+//校验规则
 const rules = reactive<FormRules>({
   pass: [{ required: true, message: 'pass is required' }],
   email: [
@@ -85,10 +91,23 @@ const rules = reactive<FormRules>({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
+  console.log(formEl, 333)
+
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
       console.log('submit!')
+      store.dispatch('users/login', ruleForm).then((res) => {
+        if (res.data.errcode === 0) {
+          store.commit('users/updateToken', res.data.data.token)
+          ElMessage.success('登录成功')
+          router.push('/')
+        } else if (res.data.errcode === -1) {
+          ElMessage.error(res.data.errmsg)
+        } else {
+          alert('登录失败')
+        }
+      })
     } else {
       console.log('error submit!')
     }
