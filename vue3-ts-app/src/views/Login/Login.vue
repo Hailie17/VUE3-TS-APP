@@ -56,7 +56,7 @@ interface User {
   email: string
   pass: string
 }
-
+// 1
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<User>({
   pass: '',
