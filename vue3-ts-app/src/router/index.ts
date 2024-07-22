@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import stores from '@/stores'
+import type { StateAll } from '@/stores'
 
 const Login = () => import('@/views/Login/Login.vue')
 const Home = () => import('@/views/Home/Home.vue')
@@ -86,6 +88,23 @@ const router = createRouter({
       component: Login
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const token = (stores.state as StateAll).users.token
+  if (to.meta.auth) {
+    if (token) {
+      next()
+    } else {
+      next('/login')
+    }
+  } else {
+    if (token && to.path === '/login') {
+      next('/')
+    } else {
+      next()
+    }
+  }
 })
 
 export default router
