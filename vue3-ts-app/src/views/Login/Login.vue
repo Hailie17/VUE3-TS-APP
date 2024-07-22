@@ -99,7 +99,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
       console.log('submit!')
       store.dispatch('users/login', ruleForm).then((res) => {
         if (res.data.errcode === 0) {
-          store.commit('users/updateToken', res.data.data.token)
+          store.commit('users/updateToken', res.data.token)
           ElMessage.success('登录成功')
           router.push('/')
         } else if (res.data.errcode === -1) {
@@ -117,7 +117,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
 const autoLogin = (user: User) => {
   ruleForm.email = user.email
   ruleForm.pass = user.pass
-  submitForm(formRef.value)
+  submitForm(ruleFormRef.value)
 }
 </script>
 
