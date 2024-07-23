@@ -1,5 +1,6 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import stores, { type StateAll } from '@/stores'
+import { ElMessage } from 'element-plus'
 
 const instance = axios.create({
   baseURL: 'http://api.h5ke.top',
@@ -22,6 +23,13 @@ instance.interceptors.request.use(
 // 添加响应拦截器
 instance.interceptors.response.use(
   function (response) {
+    if (response.data.errmsg === 'token error') {
+      ElMessage.error('token error')
+      stores.commit('users/clearToken')
+      setTimeout(() => {
+        window.location.replace('/login')
+      }, 1000)
+    }
     return response
   },
   function (error) {

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import stores from '@/stores'
 import type { StateAll } from '@/stores'
+import _ from 'lodash'
 
 const Login = () => import('@/views/Login/Login.vue')
 const Home = () => import('@/views/Home/Home.vue')
@@ -92,9 +93,15 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = (stores.state as StateAll).users.token
-  if (to.meta.auth) {
+  const infos = (stores.state as StateAll).users.infos
+  if (to.meta.auth && _.isEmpty(infos)) {
     if (token) {
-      next()
+      stores.dispatch('users/infos').then((res) => {
+        if (res.data.errcode === 0) {
+          stores.commit('users/updateInfos', res.data.infos)
+          next()
+        }
+      })
     } else {
       next('/login')
     }
