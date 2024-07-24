@@ -26,7 +26,7 @@
 
 <style lang="scss" scoped>
 .el-menu {
-  height: calc(100% - 60px);
+  height: calc(100vh - 60px);
   border: none;
   padding-top: 30px;
 }

@@ -23,6 +23,15 @@ import HomeBreadcrumb from './components/HomeBreadcrumb.vue'
 </script>
 
 <style lang="scss" scoped>
-.home {
+.el-header {
+  box-shadow: 0 8px 23px -2px rgb(0 0 0 / 5%);
+}
+.el-aside {
+  box-shadow: 20px 0 8px 0 rgb(29 35 41 / 5%);
+}
+.el-main {
+  background: #f0f2f5;
+  display: flex;
+  flex-direction: column;
 }
 </style>
