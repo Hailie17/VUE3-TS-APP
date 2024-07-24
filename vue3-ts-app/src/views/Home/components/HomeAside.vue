@@ -1,5 +1,5 @@
 <template>
-  <el-menu default-active="1-1" class="el-menu-vertical-demo">
+  <el-menu :default-active="route.fullPath" router>
     <el-sub-menu v-for="item in menus" :index="item.path" :key="item.path">
       <template #title>
         <el-icon><component :is="item.meta?.icon"></component></el-icon>
@@ -22,9 +22,11 @@
 import { useRouter, type RouteRecordName } from 'vue-router'
 import _ from 'lodash'
 import { useStore } from '@/stores'
+import { useRoute } from 'vue-router'
 
 const router = useRouter()
 const stores = useStore()
+const route = useRoute()
 const permissions = stores.state.users.infos.permission
 const menus = _.cloneDeep(router.options.routes).filter((v) => {
   v.children = v.children?.filter(
