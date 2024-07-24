@@ -19,12 +19,18 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter, type RouteRecordName } from 'vue-router'
 import _ from 'lodash'
+import { useStore } from '@/stores'
 
 const router = useRouter()
+const stores = useStore()
+const permissions = stores.state.users.infos.permission
 const menus = _.cloneDeep(router.options.routes).filter((v) => {
-  return v.meta?.menu
+  v.children = v.children?.filter(
+    (v) => v.meta?.menu && (permissions as (RouteRecordName | undefined)[]).includes(v.name)
+  )
+  return v.meta?.menu && (permissions as (RouteRecordName | undefined)[]).includes(v.name)
 })
 </script>
 
