@@ -31,15 +31,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { useRouter } from 'vue-router'
-import _ from 'lodash'
-
-const router = useRouter()
-const menus = _.cloneDeep(router.options.routes).filter((v) => {
-  return v.meta?.menu
-})
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .home-header {

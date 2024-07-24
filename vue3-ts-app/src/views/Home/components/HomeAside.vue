@@ -1,6 +1,6 @@
 <template>
   <el-menu default-active="1-1" class="el-menu-vertical-demo">
-    <el-sub-menu index="1">
+    <el-sub-menu v-for="item in menus" :index="item.path" :key="item.path">
       <template #title>
         <el-icon><location /></el-icon>
         <span>Navigator One</span>
@@ -22,7 +22,15 @@
   </el-menu>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import _ from 'lodash'
+
+const router = useRouter()
+const menus = _.cloneDeep(router.options.routes).filter((v) => {
+  return v.meta?.menu
+})
+</script>
 
 <style lang="scss" scoped>
 .el-menu {
