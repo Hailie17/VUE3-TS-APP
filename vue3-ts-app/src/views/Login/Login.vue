@@ -91,8 +91,6 @@ const rules = reactive<FormRules>({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
-  console.log(formEl, 333)
-
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
