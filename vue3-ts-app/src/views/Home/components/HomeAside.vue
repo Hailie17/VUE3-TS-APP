@@ -2,22 +2,18 @@
   <el-menu default-active="1-1" class="el-menu-vertical-demo">
     <el-sub-menu v-for="item in menus" :index="item.path" :key="item.path">
       <template #title>
-        <el-icon><location /></el-icon>
-        <span>Navigator One</span>
+        <el-icon><component :is="item.meta?.icon"></component></el-icon>
+        <span>{{ item.meta?.title }}</span>
       </template>
-      <el-menu-item-group title="Group One">
-        <el-menu-item index="1-1"
-          ><el-icon><location /></el-icon>item one</el-menu-item
-        >
-        <el-menu-item index="1-2"
-          ><el-icon><location /></el-icon>item two</el-menu-item
-        >
-      </el-menu-item-group>
-      <el-menu-item-group title="Group Two">
-        <el-menu-item index="1-3"
-          ><el-icon><location /></el-icon>item three</el-menu-item
-        >
-      </el-menu-item-group>
+
+      <el-menu-item
+        v-for="itemChild in item.children"
+        :index="item.path + itemChild.path"
+        :key="item.path + itemChild.path"
+      >
+        <el-icon><component :is="itemChild.meta?.icon"></component></el-icon>
+        <span>{{ itemChild.meta?.title }}</span>
+      </el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>
