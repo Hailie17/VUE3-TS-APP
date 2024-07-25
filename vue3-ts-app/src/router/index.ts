@@ -43,7 +43,8 @@ const router = createRouter({
             title: '在线打卡签到',
             icon: 'Position',
             auth: true
-          }
+          },
+          beforeEnter: (to, from, next) => {}
         },
         {
           path: 'execption',
