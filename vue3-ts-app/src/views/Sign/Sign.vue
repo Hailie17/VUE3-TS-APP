@@ -1,17 +1,14 @@
 <template>
   <el-descriptions border direction="vertical" :column="9">
     <el-descriptions-item label="月份">{{ month }}月</el-descriptions-item>
-    <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-    <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
-    <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-    <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
-    <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-    <el-descriptions-item label="Place">Suzhou</el-descriptions-item>
+    <el-descriptions-item v-for="(value, key) in DetailKey" :key="key" :label="value">{{
+      detailValue[key]
+    }}</el-descriptions-item>
     <el-descriptions-item label="操作">
-      <el-button type="primary" plain size="small">查看详情</el-button>
+      <el-button type="primary" plain size="small" @click="toException">查看详情</el-button>
     </el-descriptions-item>
     <el-descriptions-item label="考勤状态">
-      <el-tag type="danger" size="small">异常</el-tag>
+      <el-tag :type="statusValue.type" size="small">{{ statusValue.text }}</el-tag>
     </el-descriptions-item>
   </el-descriptions>
   <el-calendar v-model="date">
@@ -19,7 +16,7 @@
       <el-button type="primary">在线签到</el-button>
       <el-space>
         <el-button plain>{{ year }}年</el-button>
-        <el-select v-model="month">
+        <el-select v-model="month" @change="handleChange">
           <el-option v-for="item in 12" :label="item + '月'" :key="item" :value="item" />
         </el-select>
       </el-space>
@@ -28,10 +25,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 const date = ref(new Date())
 const year = date.value.getFullYear()
 const month = ref(date.value.getMonth() + 1)
+
+const router = useRouter()
+
+enum DetailKey {
+  normal = '正常',
+  absent = '缺勤',
+  miss = '漏打卡',
+  late = '迟到',
+  early = '异常',
+  lateAndEarly = '迟到并早退'
+}
+
+const detailValue = reactive({
+  normal: 0,
+  absent: 0,
+  miss: 0,
+  late: 0,
+  early: 5,
+  lateAndEarly: 0
+})
+
+const statusValue = reactive({
+  type: 'success' as 'success' | 'warning',
+  text: '成功' as '成功' | '失败'
+})
+
+const toException = () => {
+  router.push('/exception')
+}
+
+const handleChange = () => {
+  date.value = new Date(`${year}.${month.value}`)
+}
 </script>
 
 <style lang="scss" scoped>
