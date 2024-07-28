@@ -60,8 +60,8 @@ const router = createRouter({
           }
         },
         {
-          path: 'execption',
-          name: 'execption',
+          path: 'exception',
+          name: 'exception',
           component: Execption,
           meta: {
             menu: true,
