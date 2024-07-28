@@ -25,13 +25,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watchEffect, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from '@/stores'
+import { toZero } from '@/utils/common'
+
 const date = ref(new Date())
 const year = date.value.getFullYear()
 const month = ref(date.value.getMonth() + 1)
 
 const router = useRouter()
+const stores = useStore()
+const signsInfos = computed(() => stores.state.signs.infos)
+const usersInfos = computed(() => stores.state.users.infos)
 
 enum DetailKey {
   normal = '正常',
@@ -54,6 +60,47 @@ const detailValue = reactive({
 const statusValue = reactive({
   type: 'success' as 'success' | 'warning',
   text: '成功' as '成功' | '失败'
+})
+
+watchEffect((reset) => {
+  const detailMonth = (signsInfos.value.detail as { [index: string]: unknown })[
+    toZero(month.value)
+  ] as { [index: string]: unknown }
+  for (const attr in detailMonth) {
+    switch (detailMonth[attr]) {
+      case DetailKey.normal:
+        detailValue.normal++
+        break
+      case DetailKey.absent:
+        detailValue.absent++
+        break
+      case DetailKey.miss:
+        detailValue.miss++
+        break
+      case DetailKey.late:
+        detailValue.late++
+        break
+      case DetailKey.early:
+        detailValue.early++
+        break
+      case DetailKey.lateAndEarly:
+        detailValue.lateAndEarly++
+        break
+    }
+  }
+  for (const attr in detailValue) {
+    if (attr !== 'normal' && detailValue[attr as keyof typeof detailValue] !== 0) {
+      statusValue.type = 'warning'
+      statusValue.text = '失败'
+    }
+  }
+  reset(() => {
+    statusValue.type = 'success'
+    statusValue.text = '成功'
+    for (const attr in detailValue) {
+      detailValue[attr as keyof typeof detailValue] = 0
+    }
+  })
 })
 
 const toException = () => {
