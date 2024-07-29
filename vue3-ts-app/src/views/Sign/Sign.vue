@@ -104,7 +104,12 @@ watchEffect((reset) => {
 })
 
 const toException = () => {
-  router.push('/exception')
+  router.push({
+    path: '/exception',
+    query: {
+      month: month.value
+    }
+  })
 }
 
 const handleChange = () => {
