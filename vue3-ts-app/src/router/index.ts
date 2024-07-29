@@ -90,6 +90,20 @@ const router = createRouter({
             title: '异常考勤查询',
             icon: 'Edit',
             auth: true
+          },
+          beforeEnter: (to, from, next) => {
+            const usersInfos = (stores.state as StateAll).users.infos
+            const signsInfos = (stores.state as StateAll).signs.infos
+            if (_.isEmpty(signsInfos)) {
+              stores.dispatch('signs/getTime').then((res) => {
+                if (res.data.errcode === 0) {
+                  stores.commit('signs/updateInfos', res.data.infos)
+                  next()
+                }
+              })
+            } else {
+              next()
+            }
           }
         }
       ]
