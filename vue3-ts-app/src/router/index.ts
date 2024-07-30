@@ -79,6 +79,20 @@ const router = createRouter({
             title: '我的考勤审批',
             icon: 'CircleCheck',
             auth: true
+          },
+          beforeEnter: (to, from, next) => {
+            const usersInfos = (stores.state as StateAll).users.infos
+            const checksApplyList = (stores.state as StateAll).check.applyList
+            if (_.isEmpty(checksApplyList)) {
+              stores.dispatch('check/getApply',{applicantid: usersInfos._id}).then((res) => {
+                if (res.data.errcode === 0) {
+                  stores.commit('check/updateApply', res.data.rets)
+                  next()
+                }
+              })
+            } else {
+              next()
+            }
           }
         },
         {
