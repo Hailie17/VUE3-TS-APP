@@ -2,7 +2,7 @@
   <div class="apply-title">
     <el-button type="primary">添加审批</el-button>
     <el-space>
-      <el-input placeholder="请输入搜索关键词" />
+      <el-input v-model="searchWord" placeholder="请输入搜索关键词" />
       <el-button type="primary" icon="search" >搜索</el-button>
       <el-divider direction="vertical"></el-divider>
       <el-radio-group v-model="approverType">
@@ -14,27 +14,44 @@
     </el-space>
   </div>
   <div class="apply-table">
-    <el-table :data="applyList" border style="width: 100%">
+    <el-table :data="pageApplyList" border style="width: 100%">
       <el-table-column prop="applicantname" label="申请人" width="180" />
       <el-table-column prop="reason" label="审批事由" width="180" />
-      <el-table-column prop="time" label="时间" />
+      <el-table-column prop="time" label="时间">
+        <template #default="scope">
+          <div style="display: flex;align-items: center">
+            <el-icon><timer /></el-icon>
+            <span style="margin-left: 10px">{{scope.row.time.join(' - ')}}</span>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="note" label="备注" />
       <el-table-column prop="approvername" label="审批人" width="180" />
       <el-table-column prop="state" label="状态" width="180" />
     </el-table>
+    <el-pagination small background layout="prev,pager,next" :total="applyList.length" :page-size="pageSize" @current-change="handleChange" />
   </div>
 </template>
 
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 import {useStore} from "@/stores";
+import {Timer} from "@element-plus/icons-vue";
 
 const store = useStore()
-const applyList = computed(() => store.state.check.applyList)
+const defaltType = '全部'
+const approverType = ref(defaltType)
+const searchWord = ref('')
+const applyList = computed(() => store.state.check.applyList.filter((v)=> (v.state === approverType.value || defaltType === approverType.value) && v.note.includes(searchWord.value)))
+const pageSize = ref(2)
+const pageCurrent = ref(1)
+const pageApplyList = computed(() => applyList.value.slice((pageCurrent.value - 1)*pageSize.value,pageCurrent.value*pageSize.value))
 
-console.log(applyList)
+const handleChange = (value:number) => {
+  pageCurrent.value = value
+}
 
-const approverType = ref('全部')
+
 </script>
 
 <style lang="scss" scoped>
