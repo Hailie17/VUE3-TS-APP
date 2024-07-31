@@ -31,6 +31,7 @@
     </el-table>
     <el-pagination small background layout="prev,pager,next" :total="applyList.length" :page-size="pageSize" @current-change="handleChange" />
   </div>
+  <!--弹框-->
   <el-dialog
       v-model="dialogVisible"
       title="添加审批"
@@ -87,7 +88,7 @@ import {computed, reactive, ref} from 'vue'
 import {useStore} from "@/stores";
 import {Timer} from "@element-plus/icons-vue";
 import type {DateModelType, FormInstance} from "element-plus";
-import {ElMessage} from "element-plus";
+import {ElMessage, FormRules} from "element-plus";
 
 interface ApplyList {
   applicantid: string,
@@ -118,7 +119,26 @@ const handleOpen = () => {
 const handleClose = () => {
   dialogVisible.value = false
 }
-
+const validateTime =(rule: unknown, value: [DateModelType, DateModelType], callback: (arg?:Error) =>void) => {
+  if (!value[0] && !value[1]) {
+    return callback(new Error('请选择审批时间'))
+  } else {
+    callback()
+  }
+}
+// 验证规则
+const rules = reactive<FormRules>({
+  approvalname: [{ required: true, message: '请选择审批人',trigger: 'blur' }],
+  time: [{ validator: validateTime, message: '请选择审批时间',trigger: 'blur' }],
+  note: [{ required: true, message: '请审批备注',trigger: 'blur' }],
+  reason: [
+    {
+      required: true,
+      message: '请选择审批原因',
+      trigger: 'blur'
+    },
+  ]
+})
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<ApplyList>({
   applicantid: '',
