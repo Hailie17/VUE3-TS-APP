@@ -46,7 +46,7 @@
         :rules="rules"
         label-width="80"
     >
-      <el-form-item label="审批人" prop="approvalname">
+      <el-form-item label="审批人" prop="approvername">
         <el-select v-model="ruleForm.approvername" placeholder="请选择审批人">
           <el-option v-for="item in approver" :value="item.name" :label="item.name" :key="item._id" ></el-option>
         </el-select>
