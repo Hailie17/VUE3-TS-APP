@@ -65,9 +65,31 @@ const router = createRouter({
           component: Execption,
           meta: {
             menu: true,
-            title: '添加考勤审批',
+            title: '异常考勤查询',
             icon: 'Clock',
             auth: true
+          },
+          beforeEnter:async  (to, from, next) => {
+            const usersInfos = (stores.state as StateAll).users.infos
+            const signsInfos = (stores.state as StateAll).signs.infos
+            const checksApplyList = (stores.state as StateAll).check.applyList
+            if (_.isEmpty(signsInfos)) {
+              const res = await stores.dispatch('signs/getTime',{userid:usersInfos._id})
+              if (res.data.errcode === 0) {
+                stores.commit('signs/updateInfos', res.data.infos)
+              } else {
+                return
+              }
+            }
+            if (_.isEmpty(checksApplyList)) {
+              const res = await stores.dispatch('check/getApply',{applicantid: usersInfos._id})
+              if (res.data.errcode === 0) {
+                stores.commit('check/updateApply', res.data.rets)
+              }else {
+                return
+              }
+            }
+            next()
           }
         },
         {
@@ -76,23 +98,31 @@ const router = createRouter({
           component: Apply,
           meta: {
             menu: true,
-            title: '我的考勤审批',
+            title: '添加考勤审批',
             icon: 'CircleCheck',
             auth: true
           },
-          beforeEnter: (to, from, next) => {
+          beforeEnter:async  (to, from, next) => {
             const usersInfos = (stores.state as StateAll).users.infos
+            const signsInfos = (stores.state as StateAll).signs.infos
             const checksApplyList = (stores.state as StateAll).check.applyList
-            if (_.isEmpty(checksApplyList)) {
-              stores.dispatch('check/getApply',{applicantid: usersInfos._id}).then((res) => {
-                if (res.data.errcode === 0) {
-                  stores.commit('check/updateApply', res.data.rets)
-                  next()
-                }
-              })
-            } else {
-              next()
+            if (_.isEmpty(signsInfos)) {
+              const res = await stores.dispatch('signs/getTime',{userid:usersInfos._id})
+              if (res.data.errcode === 0) {
+                stores.commit('signs/updateInfos', res.data.infos)
+              } else {
+                return
+              }
             }
+            if (_.isEmpty(checksApplyList)) {
+              const res = await stores.dispatch('check/getApply',{applicantid: usersInfos._id})
+              if (res.data.errcode === 0) {
+                stores.commit('check/updateApply', res.data.rets)
+              }else {
+                return
+              }
+            }
+            next()
           }
         },
         {
@@ -101,7 +131,7 @@ const router = createRouter({
           component: Check,
           meta: {
             menu: true,
-            title: '异常考勤查询',
+            title: '我的考勤审批',
             icon: 'Edit',
             auth: true
           },
@@ -109,7 +139,8 @@ const router = createRouter({
             const usersInfos = (stores.state as StateAll).users.infos
             const signsInfos = (stores.state as StateAll).signs.infos
             if (_.isEmpty(signsInfos)) {
-              const res = await stores.dispatch('signs/getTime')if (res.data.errcode === 0) {
+              const res = await stores.dispatch('signs/getTime')
+              if (res.data.errcode === 0) {
                 stores.commit('signs/updateInfos', res.data.infos)
               }
             } else {

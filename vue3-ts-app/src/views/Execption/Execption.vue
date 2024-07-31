@@ -2,7 +2,7 @@
   <div class="exception-title">
     <el-button type="primary" @click="handleToApply">异常处理</el-button>
     <el-space>
-      <el-button plain>2022年</el-button>
+      <el-button plain>{{ year }}年</el-button>
       <el-select v-model="month">
         <el-option v-for="item in 12" :key="item" :value="item" :label="item + '月'" />
       </el-select>
@@ -10,7 +10,7 @@
   </div>
   <el-row :gutter="10">
     <el-col :span="12">
-      <el-empty v-if="false" description="暂无异常考勤" />
+      <el-empty v-if="detailMonth.length === 0" description="暂无异常考勤" />
       <el-timeline v-else>
         <el-timeline-item v-for="item in detailMonth" :key="item[0]" :timestamp="year + '/' + month + '/' + item[0] "  placement="top">
           <el-card>
@@ -31,20 +31,13 @@
       </el-timeline>
     </el-col>
     <el-col :span="12">
-      <el-empty v-if="false" description="暂无申请审批" />
+      <el-empty v-if="applyListMonth.length === 0" description="暂无申请审批" />
       <el-timeline v-else>
-        <el-timeline-item timestamp="2022/10/3" placement="top">
+        <el-timeline-item v-for="item in applyListMonth" :key="item._id" :timestamp="item.reason" placement="top">
           <el-card>
-              <h4>矿工</h4>
-              <p>考勤详情：暂无打卡纪录</p>
-              <p>考勤详情：暂无打卡纪录</p>
-          </el-card>
-        </el-timeline-item>
-        <el-timeline-item timestamp="2022/10/3" placement="top">
-          <el-card>
-              <h4>矿工</h4>
-              <p>考勤详情：暂无打卡纪录</p>
-              <p>考勤详情：暂无打卡纪录</p>
+              <h4>{{ item.state }}</h4>
+              <p class="apply-info">申请日期: {{item.time[0]}} - {{item.time[1]}}</p>
+              <p class="apply-info">申请详情： {{item.note}}</p>
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -70,6 +63,11 @@ const signsInfos = computed(() => stores.state.signs.infos)
 const ret = ((signsInfos.value.detail as {[index:string]: unknown})[toZero(month.value)] as {[index:string]: unknown})
 const detailMonth = computed(() => Object.entries(ret).filter((v)=>v[1]!=='正常出勤').sort())
 
+const applyListMonth = computed(()=> stores.state.check.applyList.filter((v) => {
+  const startTime = v.time[0].split(' ')  [0].split('-')
+  const endTime = v.time[1].split(' ')  [0].split('-')
+  return startTime[1] >= toZero(month.value) && endTime[1] <= toZero(month.value)
+}))
 const renderTime = (date: string) => {
   const ret = ((signsInfos.value.detail as {[index:string]: unknown})[toZero(month.value)] as {[index:string]: unknown})
   if (Array.isArray(ret)) {
