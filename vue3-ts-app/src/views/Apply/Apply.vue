@@ -47,7 +47,7 @@
         label-width="80"
     >
       <el-form-item label="审批人" prop="approvalname">
-        <el-select v-model="ruleForm.approvalname" placeholder="请选择审批人">
+        <el-select v-model="ruleForm.approvername" placeholder="请选择审批人">
           <el-option v-for="item in approver" :value="item.name" :label="item.name" :key="item._id" ></el-option>
         </el-select>
       </el-form-item>
@@ -88,7 +88,8 @@ import {computed, reactive, ref} from 'vue'
 import {useStore} from "@/stores";
 import {Timer} from "@element-plus/icons-vue";
 import type {DateModelType, FormInstance} from "element-plus";
-import {ElMessage, FormRules} from "element-plus";
+import {ElMessage, type FormRules} from "element-plus";
+import moment from "moment";
 
 interface ApplyList {
   applicantid: string,
@@ -112,6 +113,7 @@ const pageApplyList = computed(() => applyList.value.slice((pageCurrent.value - 
 const handleChange = (value:number) => {
   pageCurrent.value = value
 }
+// 弹窗
 const dialogVisible = ref(false)
 const handleOpen = () => {
   dialogVisible.value = true
@@ -119,6 +121,7 @@ const handleOpen = () => {
 const handleClose = () => {
   dialogVisible.value = false
 }
+// 验证规则
 const validateTime =(rule: unknown, value: [DateModelType, DateModelType], callback: (arg?:Error) =>void) => {
   if (!value[0] && !value[1]) {
     return callback(new Error('请选择审批时间'))
@@ -126,9 +129,8 @@ const validateTime =(rule: unknown, value: [DateModelType, DateModelType], callb
     callback()
   }
 }
-// 验证规则
 const rules = reactive<FormRules>({
-  approvalname: [{ required: true, message: '请选择审批人',trigger: 'blur' }],
+  approvername: [{ required: true, message: '请选择审批人',trigger: 'blur' }],
   time: [{ validator: validateTime, message: '请选择审批时间',trigger: 'blur' }],
   note: [{ required: true, message: '请审批备注',trigger: 'blur' }],
   reason: [
@@ -155,7 +157,15 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
-      console.log(ruleForm,333)
+      ruleForm.applicantid = usersInfos.value._id
+      ruleForm.applicantname = usersInfos.value.name
+      ruleForm.approverid = (approver.value.find((v)=>v.name === ruleForm.approvername) as { [index: string]: unknown })
+      console.log(ruleForm.approverid)
+      ruleForm.time[0] = moment(ruleForm.time[0]).format('YYYY-MM-DD hh:mm:ss')
+      ruleForm.time[1] = moment(ruleForm.time[1]).format('YYYY-MM-DD hh:mm:ss')
+      store.dispatch('check/postApply',ruleForm).then(res => {
+        console.log(res)
+      })
     } else {
       console.log('error submit!')
     }
