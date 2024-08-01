@@ -1,6 +1,6 @@
 <template>
   <div class="check">
-    <h2>check</h2>
+    <!--<h2>check</h2>-->
   </div>
 </template>
 

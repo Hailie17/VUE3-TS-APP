@@ -135,26 +135,26 @@ const router = createRouter({
             icon: 'Edit',
             auth: true
           },
-         beforeEnter:async  (to, from, next) => {
+          beforeEnter:async  (to, from, next) => {
             const usersInfos = (stores.state as StateAll).users.infos
             const signsInfos = (stores.state as StateAll).signs.infos
+            const checksApplyList = (stores.state as StateAll).check.applyList
             if (_.isEmpty(signsInfos)) {
-              const res = await stores.dispatch('signs/getTime')
+              const res = await stores.dispatch('signs/getTime',{userid:usersInfos._id})
               if (res.data.errcode === 0) {
                 stores.commit('signs/updateInfos', res.data.infos)
+              } else {
+                return
               }
-            } else {
-              return
             }
-           if (_.isEmpty(checksApplyList)) {
-             const res = stores.dispatch('check/getApply',{applicantid: usersInfos._id})
-             if (res.data.errcode === 0) {
-               stores.commit('check/updateApply', res.data.rets)
-               next()
-             }
-           } else {
-             return
-           }
+            if (_.isEmpty(checksApplyList)) {
+              const res = await stores.dispatch('check/getApply',{applicantid: usersInfos._id})
+              if (res.data.errcode === 0) {
+                stores.commit('check/updateApply', res.data.rets)
+              }else {
+                return
+              }
+            }
             next()
           }
         }
