@@ -41,6 +41,8 @@
 import {computed, reactive, ref} from 'vue'
 import stores, {useStore} from "@/stores";
 import {Timer} from "@element-plus/icons-vue";
+import _ from "lodash";
+import {ElMessage} from "element-plus";
 
 const defaltType = '全部'
 const approverType = ref(defaltType)
@@ -54,11 +56,13 @@ const checkList = computed(() => store.state.check.checkList)
 const pageCheckList = computed(() => checkList.value.slice((pageCurrent.value - 1)*pageSize.value,pageCurrent.value*pageSize.value))
 
 const handlePutApply = (_id:string,state: '已通过' | '未通过') => {
-  store.dispatch('check/putApply',{_id,state}).then((res) => {
+  store.dispatch('check/putApply',{_id,state}).then(async (res) => {
     if (res.data.errcode === 0) {
-      stores.commit('check/updateCheck', res.data.rets)
-    } else {
-      return
+        const res = await stores.dispatch('check/getApply',{approverid:usersInfos.value._id})
+        if (res.data.errcode === 0) {
+          stores.commit('check/updateCheck', res.data.rets)
+        }
+        ElMessage.success('审批成功')
     }
   })
 }
