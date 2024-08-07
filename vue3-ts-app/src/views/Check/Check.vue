@@ -13,7 +13,7 @@
     </el-space>
   </div>
   <div class="check-table">
-    <el-table :data="checkList" border style="width: 100%">
+    <el-table :data="pageCheckList" border style="width: 100%">
       <el-table-column prop="applicantname" label="申请人" width="180" />
       <el-table-column prop="reason" label="审批事由" width="180" />
       <el-table-column prop="time" label="时间">
@@ -25,26 +25,43 @@
         </template>
       </el-table-column>
       <el-table-column prop="note" label="备注" />
-      <el-table-column prop="approvername" label="操作" width="180" />
+      <el-table-column prop="approvername" label="操作" width="180">
+        <template #default="scope">
+          <el-button @click="handlePutApply(scope.row._id, '已通过' )" type="success" circle size="small" icon="check"></el-button>
+          <el-button @click="handlePutApply(scope.row._id, '未通过' )" type="danger" circle size="small" icon="close"></el-button>
+        </template>
+      </el-table-column>
       <el-table-column prop="state" label="状态" width="180" />
     </el-table>
-    <el-pagination small background layout="prev,pager,next" :total="1" :page-size="pageSize" @current-change="handleChange" />
+    <el-pagination small background layout="prev,pager,next" :total="checkList.length" :page-size="pageSize" @current-change="handleChange" />
   </div>
 </template>
 
 <script setup lang="ts">
 import {computed, reactive, ref} from 'vue'
-import {useStore} from "@/stores";
+import stores, {useStore} from "@/stores";
 import {Timer} from "@element-plus/icons-vue";
 
-
-const store = useStore()
-const checkList = store.state.check.checkList
 const defaltType = '全部'
 const approverType = ref(defaltType)
 const searchWord = ref('')
 const pageSize = ref(2)
 const pageCurrent = ref(1)
+
+const store = useStore()
+const usersInfos = computed(() => store.state.users.infos)
+const checkList = computed(() => store.state.check.checkList)
+const pageCheckList = computed(() => checkList.value.slice((pageCurrent.value - 1)*pageSize.value,pageCurrent.value*pageSize.value))
+
+const handlePutApply = (_id:string,state: '已通过' | '未通过') => {
+  store.dispatch('check/putApply',{_id,state}).then((res) => {
+    if (res.data.errcode === 0) {
+      stores.commit('check/updateCheck', res.data.rets)
+    } else {
+      return
+    }
+  })
+}
 
 const handleChange = (value:number) => {
   pageCurrent.value = value
