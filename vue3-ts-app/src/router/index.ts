@@ -141,7 +141,7 @@ const router = createRouter({
             if (_.isEmpty(checksCheckList)) {
               const res = await stores.dispatch('check/getApply',{approverid:usersInfos._id})
               if (res.data.errcode === 0) {
-                stores.commit('check/updateCheck', res.data.infos)
+                stores.commit('check/updateCheck', res.data.rets)
                 next()
               } else {
                 return

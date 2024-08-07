@@ -13,7 +13,7 @@
     </el-space>
   </div>
   <div class="check-table">
-    <el-table border style="width: 100%">
+    <el-table :data="checkList" border style="width: 100%">
       <el-table-column prop="applicantname" label="申请人" width="180" />
       <el-table-column prop="reason" label="审批事由" width="180" />
       <el-table-column prop="time" label="时间">
@@ -39,6 +39,7 @@ import {Timer} from "@element-plus/icons-vue";
 
 
 const store = useStore()
+const checkList = store.state.check.checkList
 const defaltType = '全部'
 const approverType = ref(defaltType)
 const searchWord = ref('')
