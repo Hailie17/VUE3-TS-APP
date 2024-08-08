@@ -144,7 +144,8 @@ const router = createRouter({
               }
             }
             if(newsInfos.applicant) {
-              const res = stores.dispatch('news/putInfo', {applicantid: usersInfos._id,applicant: false})
+              const res = await stores.dispatch('news/putInfo', {userid: usersInfos._id,applicant: false})
+              console.log(res)
               if (res.data.errcode === 0) {
                 stores.commit('news/updateInfo', res.data.info)
               }else {
@@ -178,7 +179,7 @@ const router = createRouter({
               }
             }
             if(newsInfos.approver) {
-              const res = stores.dispatch('news/putInfo', {applicantid: usersInfos._id,approver: false})
+              const res = stores.dispatch('news/putInfo', {userid: usersInfos._id,approver: false})
               if (res.data.errcode === 0) {
                 stores.commit('news/updateInfo', res.data.info)
               }else {

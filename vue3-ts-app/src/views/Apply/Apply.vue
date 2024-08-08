@@ -160,7 +160,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
       ruleForm.applicantid = usersInfos.value._id
       ruleForm.applicantname = usersInfos.value.name
       ruleForm.approverid = (approver.value.find((v)=>v.name === ruleForm.approvername) as { [index: string]: unknown })._id as string
-      console.log(ruleForm.approverid)
       ruleForm.time[0] = moment(ruleForm.time[0]).format('YYYY-MM-DD hh:mm:ss')
       ruleForm.time[1] = moment(ruleForm.time[1]).format('YYYY-MM-DD hh:mm:ss')
       store.dispatch('check/postApply',ruleForm).then(res => {
@@ -170,6 +169,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
               store.commit('check/updateApply',res.data.rets)
             }
           })
+          console.log(ruleForm.approverid)
+          store.dispatch('news/putInfo',{userid: ruleForm.approverid , approver:true})
           ElMessage.success('审批成功')
           resetForm(ruleFormRef.value)
           handleClose()
