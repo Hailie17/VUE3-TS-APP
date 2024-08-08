@@ -44,17 +44,28 @@ const router = createRouter({
             icon: 'Position',
             auth: true
           },
-          beforeEnter: (to, from, next) => {
+          beforeEnter: async (to, from, next) => {
             const usersInfos = (stores.state as StateAll).users.infos
             const signsInfos = (stores.state as StateAll).signs.infos
+            const newsInfos = (stores.state as StateAll).news.info
             if (_.isEmpty(signsInfos)) {
-              stores.dispatch('signs/getTime').then((res) => {
-                if (res.data.errcode === 0) {
-                  stores.commit('signs/updateInfos', res.data.infos)
-                  next()
-                }
-              })
-            } else {
+              const res = await stores.dispatch('signs/getTime')
+              if (res.data.errcode === 0) {
+                stores.commit('signs/updateInfos', res.data.infos)
+                next()
+              } else {
+                return
+              }
+            }
+            if (_.isEmpty(newsInfos)) {
+              const res = await stores.dispatch('news/getInfo')
+              if (res.data.errcode === 0) {
+                stores.commit('news/updateInfo', res.data.info)
+              } else {
+                return
+              }
+            }
+            else {
               next()
             }
           }
@@ -73,6 +84,7 @@ const router = createRouter({
             const usersInfos = (stores.state as StateAll).users.infos
             const signsInfos = (stores.state as StateAll).signs.infos
             const checksApplyList = (stores.state as StateAll).check.applyList
+            const newsInfos = (stores.state as StateAll).news.info
             if (_.isEmpty(signsInfos)) {
               const res = await stores.dispatch('signs/getTime',{userid:usersInfos._id})
               if (res.data.errcode === 0) {
@@ -86,6 +98,14 @@ const router = createRouter({
               if (res.data.errcode === 0) {
                 stores.commit('check/updateApply', res.data.rets)
               }else {
+                return
+              }
+            }
+            if (_.isEmpty(newsInfos)) {
+              const res = await stores.dispatch('news/getInfo')
+              if (res.data.errcode === 0) {
+                stores.commit('news/updateInfo', res.data.info)
+              } else {
                 return
               }
             }

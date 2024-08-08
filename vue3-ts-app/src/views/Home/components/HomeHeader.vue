@@ -7,12 +7,14 @@
     </span>
     <span class="home-header-title">在线考勤系统</span>
     <el-dropdown>
-      <el-badge class="home-header-badge">
+      <el-badge :is-dot="isDot">
         <el-icon :size="22"><Bell /></el-icon>
       </el-badge>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>暂无消息</el-dropdown-item>
+          <el-dropdown-item v-if="newsInfo.applicant">有审批申请消息</el-dropdown-item>
+          <el-dropdown-item v-if="newsInfo.approver">有审批结果消息</el-dropdown-item>
+          <el-dropdown-item v-else-if="!newsInfo.applicant && !newsInfo.approver">暂无消息</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -37,6 +39,12 @@ import { useStore } from '@/stores'
 const stores = useStore()
 const head = computed(() => stores.state.users.infos.head)
 const name = computed(() => stores.state.users.infos.name)
+const newsInfo = computed(() => stores.state.news.info)
+
+const isDot = computed(() => {
+  return newsInfo.value.approver || newsInfo.value.applicant
+})
+
 const handleLogout = () => {
   stores.commit('users/clearToken')
   setTimeout(() => {
