@@ -126,6 +126,7 @@ const router = createRouter({
             const usersInfos = (stores.state as StateAll).users.infos
             const signsInfos = (stores.state as StateAll).signs.infos
             const checksApplyList = (stores.state as StateAll).check.applyList
+            const newsInfos = (stores.state as StateAll).news.info
             if (_.isEmpty(signsInfos)) {
               const res = await stores.dispatch('signs/getTime',{userid:usersInfos._id})
               if (res.data.errcode === 0) {
@@ -138,6 +139,14 @@ const router = createRouter({
               const res = await stores.dispatch('check/getApply',{applicantid: usersInfos._id})
               if (res.data.errcode === 0) {
                 stores.commit('check/updateApply', res.data.rets)
+              }else {
+                return
+              }
+            }
+            if(newsInfos.applicant) {
+              const res = stores.dispatch('news/putInfo', {applicantid: usersInfos._id,applicant: false})
+              if (res.data.errcode === 0) {
+                stores.commit('news/updateInfo', res.data.info)
               }else {
                 return
               }
@@ -158,6 +167,7 @@ const router = createRouter({
           beforeEnter:async  (to, from, next) => {
             const usersInfos = (stores.state as StateAll).users.infos
             const checksCheckList = (stores.state as StateAll).check.checkList
+            const newsInfos = (stores.state as StateAll).news.info
             if (_.isEmpty(checksCheckList)) {
               const res = await stores.dispatch('check/getApply',{approverid:usersInfos._id})
               if (res.data.errcode === 0) {
@@ -166,9 +176,16 @@ const router = createRouter({
               } else {
                 return
               }
-            }else {
-              next()
             }
+            if(newsInfos.approver) {
+              const res = stores.dispatch('news/putInfo', {applicantid: usersInfos._id,approver: false})
+              if (res.data.errcode === 0) {
+                stores.commit('news/updateInfo', res.data.info)
+              }else {
+                return
+              }
+            }
+            next()
           }
         }
       ]
