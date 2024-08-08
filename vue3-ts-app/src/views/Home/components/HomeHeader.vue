@@ -12,8 +12,8 @@
       </el-badge>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item v-if="newsInfo.applicant">有审批申请消息</el-dropdown-item>
-          <el-dropdown-item v-if="newsInfo.approver">有审批结果消息</el-dropdown-item>
+          <el-dropdown-item @click="handleNavigate('/apply')" v-if="newsInfo.applicant">有审批申请消息</el-dropdown-item>
+          <el-dropdown-item @click="handleNavigate('/check')" v-if="newsInfo.approver">有审批结果消息</el-dropdown-item>
           <el-dropdown-item v-else-if="!newsInfo.applicant && !newsInfo.approver">暂无消息</el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -36,6 +36,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useStore } from '@/stores'
+import {useRouter} from "vue-router";
+
 const stores = useStore()
 const head = computed(() => stores.state.users.infos.head)
 const name = computed(() => stores.state.users.infos.name)
@@ -45,6 +47,10 @@ const isDot = computed(() => {
   return newsInfo.value.approver || newsInfo.value.applicant
 })
 
+const router = useRouter()
+const handleNavigate = (path: string) => {
+  router.push(path)
+}
 const handleLogout = () => {
   stores.commit('users/clearToken')
   setTimeout(() => {
