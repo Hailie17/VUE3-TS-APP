@@ -173,6 +173,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
           store.dispatch('news/putInfo',{userid: ruleForm.approverid , approver:true})
           ElMessage.success('审批成功')
           resetForm(ruleFormRef.value)
+
+          // 11
           handleClose()
         }
       })
