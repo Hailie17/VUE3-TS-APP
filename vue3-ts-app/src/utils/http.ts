@@ -1,6 +1,7 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import stores, { type StateAll } from '@/stores'
 import { ElMessage } from 'element-plus'
+import router from "@/router";
 
 const instance = axios.create({
   baseURL: 'http://api.h5ke.top',
@@ -29,6 +30,8 @@ instance.interceptors.response.use(
       setTimeout(() => {
         window.location.replace('/login')
       }, 1000)
+    } else if(response.data.errmsg === 'error') {
+      router.push('/500')
     }
     return response
   },
