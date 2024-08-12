@@ -216,6 +216,10 @@ const router = createRouter({
       path: '/500',
       name: '500',
       component: NotServer
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/404'
     }
   ]
 })
