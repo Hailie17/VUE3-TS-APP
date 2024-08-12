@@ -232,7 +232,11 @@ router.beforeEach((to, from, next) => {
       stores.dispatch('users/infos').then((res) => {
         if (res.data.errcode === 0) {
           stores.commit('users/updateInfos', res.data.infos)
-          next()
+          if (res.data.infos.permission.includes(to.name)){
+            next()
+          }else {
+            next('/403')
+          }
         }
       })
     } else {
