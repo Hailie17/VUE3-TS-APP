@@ -9,6 +9,9 @@ const Sign = () => import('@/views/Sign/Sign.vue')
 const Execption = () => import('@/views/Execption/Execption.vue')
 const Apply = () => import('@/views/Apply/Apply.vue')
 const Check = () => import('@/views/Check/Check.vue')
+const NotFound = () => import('@/views/NotFound/NotFound.vue')
+const NotAuth = () => import('@/views/NotAuth/NotAuth.vue')
+const NotServer = () => import('@/views/NotServer/NotServer.vue')
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -198,6 +201,21 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: Login
+    },
+    {
+      path: '/404',
+      name: '404',
+      component: NotFound
+    },
+    {
+      path: '/403',
+      name: '403',
+      component: NotAuth
+    },
+    {
+      path: '/500',
+      name: '500',
+      component: NotServer
     }
   ]
 })
